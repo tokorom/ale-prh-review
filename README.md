@@ -27,7 +27,7 @@ volt get tokorom/ale-prh-review
 
 ```vim
 let g:ale_fixers = {
-\   'review': 'prhreview'],
+\   'review': ['prhreview'],
 \}
 
 # with redpen
