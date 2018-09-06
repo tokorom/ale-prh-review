@@ -10,8 +10,17 @@ endfunction
 function! s:ignoreLines(buffer) abort
     let ignores = []
 
-    let ignore_line_patterns = get(g:, 'ale_prhreview_ignore_line_patterns', ['^#@# '])
-    let ignore_block_patterns = get(g:, 'ale_prhreview_ignore_block_patterns', [['^//.\+{\s*$', '^//}\s*$']])
+    let ignore_line_patterns = get(g:, 'ale_prhreview_ignore_line_patterns', [
+    \ '^#@# ',
+    \ ])
+    let ignore_block_patterns = get(g:, 'ale_prhreview_ignore_block_patterns', [
+    \ ['^//list\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+    \ ['^//listnum\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+    \ ['^//emlist\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+    \ ['^//emlistnum\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+    \ ['^//image\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+    \ ['^//cmd\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+    \ ])
 
     let lines = getbufline(a:buffer, 1, '$')
 
@@ -62,7 +71,12 @@ endfunction
 function! s:ignoreParts(buffer) abort
     let ignores = []
 
-    let ignore_inline_patterns = get(g:, 'ale_prhreview_ignore_inline_patterns', ['@<code>{.*}','@<fn>{.*}','@<img>{.*}','@<list>{.*}'])
+    let ignore_inline_patterns = get(g:, 'ale_prhreview_ignore_inline_patterns', [
+    \ '@<code>{.*}',
+    \ '@<fn>{.*}',
+    \ '@<img>{.*}',
+    \ '@<list>{.*}',
+    \ ])
 
     let lines = getbufline(a:buffer, 1, '$')
 

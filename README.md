@@ -40,7 +40,25 @@ let g:ale_fixers = {
 
 ```vim
 " default
-let ignore_line_patterns = ['^#@# ']
+let g:ale_prhreview_ignore_line_patterns = [
+\ '^#@# ',
+\ ]
+
 " default
-let ignore_block_patterns = [['^//.\+{\s*$', '^//}\s*$']]
+let g:ale_prhreview_ignore_block_patterns = [
+\ ['^//list\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+\ ['^//listnum\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+\ ['^//emlist\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+\ ['^//emlistnum\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+\ ['^//image\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+\ ['^//cmd\([ [].\+{\|{\)\s*$', '^//}\s*$'],
+\ ]
+
+" default
+let g:ale_prhreview_ignore_inline_patterns = [
+\ '@<code>{.*}',
+\ '@<fn>{.*}',
+\ '@<img>{.*}',
+\ '@<list>{.*}',
+\ ]
 ```
