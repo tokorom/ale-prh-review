@@ -88,7 +88,7 @@ function! ale#handlers#prhreview#HandleOutput(buffer, lines) abort
             if index(ignore_rows, lnum - 1) == -1
               let dict.lnum = lnum
               let dict.col = s:replaceStringIndexToCol(col, lnum)
-              let dict.text = text . ' ' . lnum
+              let dict.text = text
               let dict.type = 'W'
             endif
         endif
