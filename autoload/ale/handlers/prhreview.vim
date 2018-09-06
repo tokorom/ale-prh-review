@@ -72,10 +72,10 @@ function! s:ignoreParts(buffer) abort
     let ignores = []
 
     let ignore_inline_patterns = get(g:, 'ale_prhreview_ignore_inline_patterns', [
-    \ '@<code>{.*}',
-    \ '@<fn>{.*}',
-    \ '@<img>{.*}',
-    \ '@<list>{.*}',
+    \ '@<code>{[^}]*}',
+    \ '@<fn>{[^}]*}',
+    \ '@<img>{[^}]*}',
+    \ '@<list>{[^}]*}',
     \ ])
 
     let lines = getbufline(a:buffer, 1, '$')
