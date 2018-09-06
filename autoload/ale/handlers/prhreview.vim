@@ -1,41 +1,73 @@
 " Author: tokorom https://github.com/tokorom
 " Description: Handle errors for review with prh.
 
-function! s:replaceStringIndexToCol(index, line) abort
-  let line = getline(a:line)
+function! s:replaceStringIndexToCol(index, lnum) abort
+  let line = getline(a:lnum)
   let back = join(split(line, '\zs')[a:index : ], '')
   return stridx(line, back)
 endfunction
 
+function! s:ignoreLines(buffer) abort
+    let ignores = [10]
+
+    let ignore_patterns = get(g:, 'ale_prhreview_ignore_patterns', ['^#@# '])
+
+    let lines = getbufline(a:buffer, 1, '$')
+
+    let row = 0
+    while row < len(lines)
+        let line = lines[row]
+
+        for pattern in ignore_patterns
+            if line =~ pattern
+                call add(ignores, row)
+            endif
+        endfor
+
+        let row += 1
+    endwhile
+
+    return ignores
+endfunction
+
 function! ale#handlers#prhreview#HandleOutput(buffer, lines) abort
-    let l:output = []
+    let output = []
+
+    let ignore_rows = s:ignoreLines(a:buffer)
 
     " Sample: foo/bar.re(30,2): baz baz error
-    let l:pattern = '\v^.+\((\d+),(\d+)\): (.+)$'
+    let pattern = '\v^.+\((\d+),(\d+)\): (.+)$'
     let dict = {}
 
-    for l:line in a:lines
-        let l:match = matchlist(l:line, l:pattern)
-        if len(l:match) == 0
+    for line in a:lines
+        let match = matchlist(line, pattern)
+        if len(match) == 0
             if has_key(dict, 'text')
-              let dict.text = dict.text . "\n" . l:line
+              let dict.text = dict.text . "\n" . line
             endif
         else
             if has_key(dict, 'text')
-              call add(l:output, dict)
+              call add(output, dict)
             endif
 
             let dict = {}
-            let dict.lnum = l:match[1] + 0
-            let dict.col = s:replaceStringIndexToCol(l:match[2] + 0, l:match[1] + 0)
-            let dict.text = l:match[3]
-            let dict.type = 'W'
+
+            let lnum = match[1] + 0
+            let col = match[2] + 0
+            let text = match[3]
+
+            if index(ignore_rows, lnum - 1) == -1
+              let dict.lnum = lnum
+              let dict.col = s:replaceStringIndexToCol(col, lnum)
+              let dict.text = text . ' ' . lnum
+              let dict.type = 'W'
+            endif
         endif
     endfor
 
     if has_key(dict, 'text')
-      call add(l:output, dict)
+      call add(output, dict)
     endif
 
-    return l:output
+    return output
 endfunction

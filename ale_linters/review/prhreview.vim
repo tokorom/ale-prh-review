@@ -5,5 +5,5 @@ call ale#linter#Define('review', {
 \   'name': 'prhreview',
 \   'executable': 'prh',
 \   'command': 'prh %s',
-\   'callback': 'ale#handlers#prh#HandleOutput',
+\   'callback': 'ale#handlers#prhreview#HandleOutput',
 \})
