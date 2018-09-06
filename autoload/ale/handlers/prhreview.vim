@@ -10,15 +10,44 @@ endfunction
 function! s:ignoreLines(buffer) abort
     let ignores = [10]
 
-    let ignore_patterns = get(g:, 'ale_prhreview_ignore_patterns', ['^#@# '])
+    let ignore_line_patterns = get(g:, 'ale_prhreview_ignore_line_patterns', ['^#@# '])
+    let ignore_block_patterns = get(g:, 'ale_prhreview_ignore_block_patterns', [['^//.\+{\s*$', '^//}\s*$']])
 
     let lines = getbufline(a:buffer, 1, '$')
 
     let row = 0
+    let inIgnoreBlock = 0
     while row < len(lines)
         let line = lines[row]
 
-        for pattern in ignore_patterns
+        if !inIgnoreBlock
+            for blockPattern in ignore_block_patterns
+                let blockOpen = blockPattern[0]
+                if line =~ blockOpen
+                    let inIgnoreBlock = 1
+                    break
+                endif
+            endfor
+        endif
+
+        if inIgnoreBlock
+            call add(ignores, row)
+
+            for blockPattern in ignore_block_patterns
+                let blockClose = blockPattern[1]
+                if line =~ blockClose
+                    let inIgnoreBlock = 0
+                    break
+                endif
+            endfor
+
+            if inIgnoreBlock
+                let row += 1
+                continue
+            endif
+        endif
+
+        for pattern in ignore_line_patterns
             if line =~ pattern
                 call add(ignores, row)
             endif
