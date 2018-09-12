@@ -54,6 +54,12 @@ Given (has code):
 Execute (has code):
   AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 19, 'start': 6}]
 
+Given (has tt):
+  Hello @<tt>{World}
+
+Execute (has tt):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 17, 'start': 6}]
+
 Given (has b):
   Hello @<b>{World}
 
