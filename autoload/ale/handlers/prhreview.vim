@@ -1,13 +1,13 @@
 " Author: tokorom https://github.com/tokorom
 " Description: Handle errors for review with prh.
 
-function! s:replaceStringIndexToCol(index, lnum) abort
+function! ale#handlers#prhreview#replaceStringIndexToCol(index, lnum) abort
   let line = getline(a:lnum)
   let back = join(split(line, '\zs')[a:index : ], '')
   return stridx(line, back)
 endfunction
 
-function! s:ignoreLines(buffer) abort
+function! ale#handlers#prhreview#ignoreLines(buffer) abort
     let ignores = []
 
     let ignore_line_patterns = get(g:, 'ale_prhreview_ignore_line_patterns', [
@@ -68,7 +68,7 @@ function! s:ignoreLines(buffer) abort
     return ignores
 endfunction
 
-function! s:ignoreParts(buffer) abort
+function! ale#handlers#prhreview#ignoreParts(buffer) abort
     let ignores = []
 
     let ignore_inline_patterns = get(g:, 'ale_prhreview_ignore_inline_patterns', [
@@ -103,7 +103,7 @@ function! s:ignoreParts(buffer) abort
     return ignores
 endfunction
 
-function! s:matchIgnoreParts(ignoreParts, lnum, col) abort
+function! ale#handlers#prhreview#matchIgnoreParts(ignoreParts, lnum, col) abort
     let parts = a:ignoreParts
     let row = a:lnum - 1
     let col = a:col - 1
@@ -120,8 +120,8 @@ endfunction
 function! ale#handlers#prhreview#HandleOutput(buffer, lines) abort
     let output = []
 
-    let ignoreRows = s:ignoreLines(a:buffer)
-    let ignoreParts = s:ignoreParts(a:buffer)
+    let ignoreRows = ale#handlers#prhreview#ignoreLines(a:buffer)
+    let ignoreParts = ale#handlers#prhreview#ignoreParts(a:buffer)
 
     " Sample: foo/bar.re(30,2): baz baz error
     let pattern = '\v^.+\((\d+),(\d+)\): (.+)$'
@@ -142,10 +142,10 @@ function! ale#handlers#prhreview#HandleOutput(buffer, lines) abort
 
             let lnum = match[1] + 0
             let index = match[2] + 0
-            let col = s:replaceStringIndexToCol(index, lnum)
+            let col = ale#handlers#prhreview#replaceStringIndexToCol(index, lnum)
             let text = match[3]
 
-            if (index(ignoreRows, lnum - 1) == -1) && !(s:matchIgnoreParts(ignoreParts, lnum, col))
+            if (index(ignoreRows, lnum - 1) == -1) && !(ale#handlers#prhreview#matchIgnoreParts(ignoreParts, lnum, col))
               let dict.lnum = lnum
               let dict.col = col
               let dict.text = text

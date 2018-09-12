@@ -1,0 +1,67 @@
+# Test ignoreLines
+
+Given (no comments):
+  hello
+  foo bar
+
+Execute (no comments):
+  AssertEqual call('ale#handlers#prhreview#ignoreLines', ['%']), []
+
+Given (a comment):
+  hello
+  #@# foo bar
+
+Execute (a comment):
+  AssertEqual call('ale#handlers#prhreview#ignoreLines', ['%']), [1]
+
+Given (2 comments):
+  #@# first line
+  hello
+  #@# foo bar
+
+Execute (2 comments):
+  AssertEqual call('ale#handlers#prhreview#ignoreLines', ['%']), [0, 2]
+
+Given (has list):
+  Hello, World
+  //list[id][caption][ft]{
+  Hello, World
+  //}
+
+Execute (has list):
+  AssertEqual call('ale#handlers#prhreview#ignoreLines', ['%']), [1, 2, 3]
+
+Given (has quote):
+  Hello, World
+  //quote{
+  Hello, World
+  //}
+
+Execute (has quote):
+  AssertEqual call('ale#handlers#prhreview#ignoreLines', ['%']), []
+
+# Test ignoreParts
+
+Given (no parts):
+  Hello, World
+
+Execute (no parts):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), []
+
+Given (has code):
+  Hello @<code>{World}
+
+Execute (has code):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 19, 'start': 6}]
+
+Given (has b):
+  Hello @<b>{World}
+
+Execute (has b):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), []
+
+Given (has code and list):
+  Hello @<code>{World}... Hello @<list>{List}
+
+Execute (has code and list):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 19, 'start': 6}, {'row': 0, 'end': 42, 'start': 30}]
