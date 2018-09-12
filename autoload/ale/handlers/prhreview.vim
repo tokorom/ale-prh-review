@@ -72,7 +72,9 @@ function! ale#handlers#prhreview#ignoreParts(buffer) abort
     let ignores = []
 
     let ignore_inline_patterns = get(g:, 'ale_prhreview_ignore_inline_patterns', [
+    \ '^//\a\+\[[^]]\+\]',
     \ '@<code>{[^}]*}',
+    \ '@<tt>{[^}]*}',
     \ '@<fn>{[^}]*}',
     \ '@<img>{[^}]*}',
     \ '@<list>{[^}]*}',

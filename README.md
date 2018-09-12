@@ -56,7 +56,9 @@ let g:ale_prhreview_ignore_block_patterns = [
 
 " default
 let g:ale_prhreview_ignore_inline_patterns = [
+\ '^//\a\+\[[^]]\+\]',
 \ '@<code>{[^}]*}',
+\ '@<tt>{[^}]*}',
 \ '@<fn>{[^}]*}',
 \ '@<img>{[^}]*}',
 \ '@<list>{[^}]*}',

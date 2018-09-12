@@ -65,3 +65,9 @@ Given (has code and list):
 
 Execute (has code and list):
   AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 19, 'start': 6}, {'row': 0, 'end': 42, 'start': 30}]
+
+Given (has comment block):
+  //footnote[id][description]
+
+Execute (has comment block):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 13, 'start': 0}]
