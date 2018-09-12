@@ -88,15 +88,24 @@ function! ale#handlers#prhreview#ignoreParts(buffer) abort
         let line = lines[row]
 
         for pattern in ignore_inline_patterns
-            let match = matchstr(line, pattern)
-            if len(match) > 0
-                let dict = {}
-                let dict.row = row
-                let start = stridx(line, match)
-                let dict.start = start
-                let dict.end = start + len(match) - 1
-                call add(ignores, dict)
-            endif
+            let offset = 0
+            let target = line
+            while 1
+              let match = matchstr(target, pattern)
+              if len(match) > 0
+                  let dict = {}
+                  let dict.row = row
+                  let start = stridx(target, match)
+                  let dict.start = offset + start
+                  let dict.end = offset + start + len(match) - 1
+                  call add(ignores, dict)
+
+                  let offset = dict.end
+                  let target = strpart(line, dict.end)
+              else
+                break
+              endif
+            endwhile
         endfor
 
         let row += 1

@@ -77,3 +77,15 @@ Given (has comment block):
 
 Execute (has comment block):
   AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 13, 'start': 0}]
+
+Given (multi tts):
+  @<tt>{body}@<tt>{body}@<tt>{body}
+
+Execute (multi tts):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 10, 'start': 0}, {'row': 0, 'end': 21, 'start': 11}, {'row': 0, 'end': 32, 'start': 22}]
+
+Given (multi tts and imgs):
+  @<tt>{body}@<tt>{body}@<tt>{body} hello @<img>{foo}
+
+Execute (multi tts and imgs):
+  AssertEqual call('ale#handlers#prhreview#ignoreParts', ['%']), [{'row': 0, 'end': 10, 'start': 0}, {'row': 0, 'end': 21, 'start': 11}, {'row': 0, 'end': 32, 'start': 22}, {'row': 0, 'end': 50, 'start': 40}]
